@@ -23,14 +23,15 @@ using namespace std;
 		if (numSongs == 0){
 			first = new DNode(t,a,m,s);
 			last = first;
-			numSongs++;
+			numSongs+=1;
 			//cout<<"added first"
 		}
-		else{
+		else if (numSongs>=1){
 			DNode *n = new DNode(t,a,m,s);
 			n->next = NULL;
-			n->prev = last;
+		    last->next = n;
 			last = n;
+			numSongs+=1;
 			//cout<<"pushed at the end"
 		}
 
@@ -66,7 +67,7 @@ using namespace std;
 		while (i<=numSongs){
 			temp->song->printSong();
 			temp = temp->next;
-			i++;
+			i+=1;
 		}
 	}
 
