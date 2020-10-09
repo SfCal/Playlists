@@ -1,5 +1,6 @@
 
 #include "DNode.hpp"
+#include "Song.hpp"
 #include "DLL.hpp"
 #include <iostream>
 #include <stdlib.h>
@@ -12,7 +13,7 @@ using namespace std;
 		numSongs = 0;
 	}
 	DLL::DLL(string t, string l, int m, int s){  // constructor, initializes a list with one new node with data x
-		DNode *n = new DNode (t,l,m,s);
+		DNode *n = new DNode(t,l,m,s);
 		first = n;
 		last = n;
 		numSongs=1;
@@ -56,11 +57,19 @@ using namespace std;
 									//beginning of the list.
 	void DLL::listDuration(int *tm, int *ts){
 		// gets the total list duration in minutes (passed in as pointers)
+		// and seconds (again, passed in as pointers)
 	}
-												// and seconds (again, passed in as pointers)
-	void DLL::printList(){
 
+	void DLL::printList(){
+		int i = 0;
+		DNode *temp = first;
+		while (i<=numSongs){
+			temp->song->printSong();
+			temp = temp->next;
+			i++;
+		}
 	}
+
 	DLL::~DLL(){
 	}
 
