@@ -19,7 +19,6 @@ Playlist::Playlist(string s) {
 	readList(s);
 	list->printList();
 	cout << endl;
-	cout << "list printed";
 	interface();
 }
 

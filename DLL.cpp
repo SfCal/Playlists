@@ -92,15 +92,12 @@ using namespace std;
 	}
 
 	void DLL::printList(){
-		int i = 0;
 		DNode *temp = first;
-		cout << "start printing"<<endl;
-		while (i<=numSongs){
-			temp->song->printSong();// seems like the program gets stuck in here since the next print statement
-			temp = temp->next;      // isn't executed
-			i+=1;
+		while (temp->next!=NULL){
+			temp->song->printSong();
+			temp = temp->next;
 		}
-		cout << "done printing";
+		temp->song->printSong();
 	}
 
 	DLL::~DLL(){
