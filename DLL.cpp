@@ -34,13 +34,43 @@ using namespace std;
 			numSongs+=1;
 			//cout<<"pushed at the end"
 		}
-
 	}
 
 	Song* DLL::pop(){
+		DNode *temp = last;
+		Song *x = temp->song;
+		if (numSongs==1){
+			first = NULL;
+			last = NULL;
+		}
+		else if (numSongs>1){
+			last = last->prev;
+			delete temp;
+			last->next = NULL;
+			numSongs--;
+		}
+		return x;
 	}//does what you'd think
 
 	int DLL::remove(string t){
+		int count = 0;
+		DNode *temp = first;
+		while (temp->song->title!=t){
+			temp = temp->next;
+			count++;
+		}
+		if (count == numSongs){
+			pop();
+			return 0; //didn't know what to return an int for so I used it to distinguish btw pop() and remove()
+		}
+		else{
+			cout << "Removing: "<< temp->song->title << ", " << temp->song->artist<<"............................."<<temp->song->min<<":"<<temp->song->sec;
+			cout << endl;
+			temp->prev->next = temp->next;
+			temp->next->prev = temp->prev;
+			delete temp;
+			return 1;
+		}
 	}
 	void DLL::makeRandom(){
 	// randomizes the order of the list
@@ -64,11 +94,13 @@ using namespace std;
 	void DLL::printList(){
 		int i = 0;
 		DNode *temp = first;
+		cout << "start printing"<<endl;
 		while (i<=numSongs){
-			temp->song->printSong();
-			temp = temp->next;
+			temp->song->printSong();// seems like the program gets stuck in here since the next print statement
+			temp = temp->next;      // isn't executed
 			i+=1;
 		}
+		cout << "done printing";
 	}
 
 	DLL::~DLL(){
