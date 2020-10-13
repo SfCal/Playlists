@@ -4,6 +4,10 @@
 #include "DLL.hpp"
 #include <iostream>
 #include <stdlib.h>
+#include <chrono>
+#include <array>
+#include <random>
+#include <algorithm>
 using namespace std;
 
 
@@ -49,7 +53,7 @@ using namespace std;
 			numSongs--;
 		}
 		return x;
-	}//does what you'd think
+	}
 
 	int DLL::remove(string t){
 		int count = 0;
@@ -78,7 +82,24 @@ using namespace std;
 	}
 
 	void DLL::makeRandom(){
-	// randomizes the order of the list
+		int randArr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		int n = sizeof(randArr) / sizeof(randArr[0]);
+		int i;
+		/*random_shuffle(randArr, randArr+n);
+		for (i=0; i<10; i++){
+			cout<<randArr[i]<<", ";
+		}
+		cout<<endl;*/
+		DNode *temp;
+		for (temp=first, i=0; temp!=NULL; temp=temp->next, i++){
+			random_shuffle(randArr, randArr+n);
+			if (randArr[i]<5){
+				moveDown(temp->song->title);
+			}
+			else if (randArr[i]>=5){
+				moveUp(temp->song->title);
+			}
+		}
 	}
 	void DLL::moveUp(string t){
 		DNode *temp;
@@ -86,7 +107,7 @@ using namespace std;
 		for (temp=first; temp!=NULL; temp=temp->next){
 			if (temp->song->title==t){
 				if (temp->prev==NULL){
-					cout << "first song"<<endl;
+					//cout << "first song"<<endl;
 					string lastTitle = last->song->title;
 					string lastArtist = last->song->artist;
 					int lastMin = last->song->min;
@@ -103,7 +124,7 @@ using namespace std;
 
 				}
 				else if (count==0){
-					cout << "middle song"<<endl;
+					//cout << "middle song"<<endl;
 					string prevTitle = temp->prev->song->title;
 					string prevArtist = temp->prev->song->artist;
 					int prevMin = temp->prev->song->min;
@@ -161,8 +182,11 @@ using namespace std;
 		}
 	}
 	void DLL::listDuration(int *tm, int *ts){
-		// gets the total list duration in minutes (passed in as pointers)
-		// and seconds (again, passed in as pointers)
+		DNode *temp;
+		for (temp=first; temp!=NULL; temp=temp->next){
+			*tm+=temp->song->min;
+			*ts+=temp->song->sec;
+		}
 	}
 
 	void DLL::printList(){
@@ -175,6 +199,11 @@ using namespace std;
 	}
 
 	DLL::~DLL(){
+		DNode *temp;
+		for (temp=first; temp!=NULL; temp=temp->next){
+			//cout << "deleting: "<<temp->song->title<<endl;
+			delete temp;
+		}
 	}
 
 
