@@ -156,8 +156,18 @@ void DLL::moveDown(string t){
     for (temp=first; temp!=NULL; temp=temp->next){
         if (temp->song->title==t){
             if (temp->next==NULL){
-                //cout << "last song"<<endl;
-                first = temp->next;
+                string temp_t = temp->song->title;
+                string temp_a = temp->song->artist;
+                int temp_min = temp->song->min;
+                int temp_sec = temp->song->sec;
+                remove(temp->song->title);
+                DNode *n = new DNode(temp_t,temp_a,temp_min,temp_sec);
+                n->next = first;
+                n->prev = NULL;
+
+                first->prev = n;
+                first = n;
+                numSongs+=1;
             }
             else if(count==0){
                 //cout << "middle song"<<endl;
