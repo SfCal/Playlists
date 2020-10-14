@@ -1,210 +1,207 @@
-
 #include "DNode.hpp"
 #include "Song.hpp"
 #include "DLL.hpp"
 #include <iostream>
 #include <stdlib.h>
-#include <chrono>
-#include <array>
 #include <random>
-#include <algorithm>
 using namespace std;
 
 
-	DLL::DLL(){  // constructor - initializes an empty list
-		last = NULL;
-		first = NULL;
-		numSongs = 0;
-	}
-	DLL::DLL(string t, string l, int m, int s){  // constructor, initializes a list with one new node with data x
-		DNode *n = new DNode(t,l,m,s);
-		first = n;
-		last = n;
-		numSongs=1;
-	}
+DLL::DLL(){  // constructor - initializes an empty list
+    last = NULL;
+    first = NULL;
+    numSongs = 0;
+}
+DLL::DLL(string t, string l, int m, int s){  // constructor, initializes a list with one new node with data x
+    DNode *n = new DNode(t,l,m,s);
+    first = n;
+    last = n;
+    numSongs=1;
+}
 
-	void DLL::push(string t, string a, int m, int s){
-		if (numSongs == 0){
-			first = new DNode(t,a,m,s);
-			last = first;
-			numSongs+=1;
-			//cout<<"added first"
-		}
-		else if (numSongs>=1){
-			DNode *n = new DNode(t,a,m,s);
-			n->next = NULL;
-		    last->next = n;
-		    n->prev = last;
-			last = n;
-			numSongs+=1;
-			//cout<<"pushed at the end"
-		}
-	}
+void DLL::push(string t, string a, int m, int s){
+    if (numSongs == 0){
+        first = new DNode(t,a,m,s);
+        last = first;
+        numSongs+=1;
+        //cout<<"added first"
+    }
+    else if (numSongs>=1){
+        DNode *n = new DNode(t,a,m,s);
+        n->next = NULL;
+        last->next = n;
+        n->prev = last;
+        last = n;
+        numSongs+=1;
+        //cout<<"pushed at the end";
+    }
+}
 
-	Song* DLL::pop(){
-		DNode *temp = last;
-		Song *x = temp->song;
-		if (temp->prev==NULL){
-			first = NULL;
-			last = NULL;
-		}
-		else{
-			temp->prev->next = NULL;
-			numSongs--;
-		}
-		return x;
-	}
+Song* DLL::pop(){
+    DNode *temp = last;
+    Song *x = temp->song;
+    if (temp->prev==NULL){
+        first = NULL;
+        last = NULL;
+    }
+    else{
+        temp->prev->next = NULL;
+        last = temp->prev;
+        numSongs--;
+    }
+    return x;
+}
 
-	int DLL::remove(string t){
-		int count = 0;
-		DNode *temp;
-		for (temp=first; temp!=NULL; temp=temp->next, count++){
-			if (temp->song->title==t){
-				if (temp->prev==NULL){
-					//cout << "first song" << endl;
-					first = temp->next;
-				}
-				else if (temp->next==NULL){
-					//cout << "pop called"<<endl;
-				    pop();
-				}
-				else{
-					//cout << "middle song"<<endl;
-					temp->prev->next = temp->next;
-					temp->next->prev = temp->prev;
-				}
-				cout << "Removing: "<< temp->song->title << ", " << temp->song->artist<<"............................."<<temp->song->min<<":"<<temp->song->sec;
-				cout << endl;
-				delete temp;
-			}
-		}
-			return count;
-	}
+int DLL::remove(string t){
+    int i = 0;
+    int count;
+    DNode *temp;
+    for (temp=first; temp!=NULL; temp=temp->next, i++){
+        if (temp->song->title==t){
+            if (temp->prev==NULL){
+                //cout << "first song" << endl;
+                temp->next->prev = NULL;
+                first = temp->next;
+                count = i;
+            }
+            else if (temp->next==NULL){
+                //cout << "pop called"<<endl;
+                pop();
+                count = i;
+            }
+            else{
+                //cout << "middle song"<<endl;
+                temp->prev->next = temp->next;
+                temp->next->prev = temp->prev;
+                count = i;
+            }
+            cout << "Removing: "<< temp->song->title << ", " << temp->song->artist<<"............................."<<temp->song->min<<":"<<temp->song->sec;
+            cout << endl;
+            delete temp;
+        }
+    }
+    //cout << count<< endl;
+    return count;
+}
 
-	void DLL::makeRandom(){
-		int randArr[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-		int n = sizeof(randArr) / sizeof(randArr[0]);
-		int i;
-		/*random_shuffle(randArr, randArr+n);
-		for (i=0; i<10; i++){
-			cout<<randArr[i]<<", ";
-		}
-		cout<<endl;*/
-		DNode *temp;
-		for (temp=first, i=0; temp!=NULL; temp=temp->next, i++){
-			random_shuffle(randArr, randArr+n);
-			if (randArr[i]<5){
-				moveDown(temp->song->title);
-			}
-			else if (randArr[i]>=5){
-				moveUp(temp->song->title);
-			}
-		}
-	}
-	void DLL::moveUp(string t){
-		DNode *temp;
-		int count = 0;//makes sure the target title isn't recognized twice within the for loop
-		for (temp=first; temp!=NULL; temp=temp->next){
-			if (temp->song->title==t){
-				if (temp->prev==NULL){
-					//cout << "first song"<<endl;
-					string lastTitle = last->song->title;
-					string lastArtist = last->song->artist;
-					int lastMin = last->song->min;
-					int lastSec = last->song->sec;
-					last->song->title = temp->song->title;
-					last->song->artist = temp->song->artist;
-					last->song->min = temp->song->min;
-					last->song->sec = temp->song->sec;
-					temp->song->title = lastTitle;
-					temp->song->artist = lastArtist;
-					temp->song->min = lastMin;
-					temp->song->sec = lastSec;
-					count++;
+void DLL::makeRandom(){
+    DNode *temp;
+    int random_number;
+    int i;
+    for (temp=first; temp!=NULL; temp=temp->next){
+        random_number = rand()%10;
+        //cout << random_number;
+        if (random_number<5){
+            for (i=0; i<random_number; i++){
+                moveDown(temp->song->title);
+            }
+        }
+        else if (random_number>=5){
+            for (i=0; i<random_number; i++){
+                moveUp(temp->song->title);
+            }
+        }
+    }
+}
+void DLL::moveUp(string t){
+    DNode *temp;
+    int count = 0;//makes sure the target title isn't recognized twice within the for loop
+    for (temp=first; temp!=NULL; temp=temp->next){
+        if (temp->song->title==t){
+            if (temp->prev==NULL){
+                string temp_t = temp->song->title;
+                string temp_a = temp->song->artist;
+                int temp_min = temp->song->min;
+                int temp_sec = temp->song->sec;
+                remove(temp->song->title);
+                push(temp_t, temp_a, temp_min, temp_sec);
+                /*cout << "first song"<<endl;
+                string secondTitle = temp->next->song->title;
+                string secondArtist = temp->next->song->artist;
+                int secondMin = temp->next->song->min;
+                int secondSec = temp->next->song->sec;
+                last->song->title = temp->song->title;
+                last->song->artist = temp->song->artist;
+                last->song->min = temp->song->min;
+                last->song->sec = temp->song->sec;
+                temp->song->title = secondTitle;
+                temp->song->artist = secondArtist;
+                temp->song->min = secondMin;
+                temp->song->sec = secondSec;
+                count++;*/
 
-				}
-				else if (count==0){
-					//cout << "middle song"<<endl;
-					string prevTitle = temp->prev->song->title;
-					string prevArtist = temp->prev->song->artist;
-					int prevMin = temp->prev->song->min;
-					int prevSec = temp->prev->song->sec;
-					temp->prev->song->title = temp->song->title;
-					temp->prev->song->artist = temp->song->artist;
-					temp->prev->song->min = temp->song->min;
-					temp->prev->song->sec = temp->song->sec;
-					temp->song->title = prevTitle;
-					temp->song->artist = prevArtist;
-					temp->song->min = prevMin;
-					temp->song->sec = prevSec;
-				}
-			}
-		}
-	}
+            }
+            else if (count==0){
+                //cout << "middle song"<<endl;
+                string prevTitle = temp->prev->song->title;
+                string prevArtist = temp->prev->song->artist;
+                int prevMin = temp->prev->song->min;
+                int prevSec = temp->prev->song->sec;
+                temp->prev->song->title = temp->song->title;
+                temp->prev->song->artist = temp->song->artist;
+                temp->prev->song->min = temp->song->min;
+                temp->prev->song->sec = temp->song->sec;
+                temp->song->title = prevTitle;
+                temp->song->artist = prevArtist;
+                temp->song->min = prevMin;
+                temp->song->sec = prevSec;
+            }
+        }
+    }
+}
 
-	void DLL::moveDown(string t){
-		DNode *temp;
-		int count = 0;
-		for (temp=first; temp!=NULL; temp=temp->next){
-			if (temp->song->title==t){
-				if (temp->next==NULL){
-					//cout << "last song"<<endl;
-					string firstTitle = first->song->title;
-					string firstArtist = first->song->artist;
-					int firstMin = first->song->min;
-					int firstSec = first->song->sec;
-					first->song->title = temp->song->title;
-					first->song->artist = temp->song->artist;
-					first->song->min = temp->song->min;
-					first->song->sec = temp->song->sec;
-					temp->song->title = firstTitle;
-					temp->song->artist = firstArtist;
-					temp->song->min = firstMin;
-					temp->song->sec = firstSec;
-				}
-				else if(count==0){
-					//cout << "middle song"<<endl;
-					string nextTitle = temp->next->song->title;
-					string nextArtist = temp->next->song->artist;
-					int nextMin = temp->next->song->min;
-					int nextSec = temp->next->song->sec;
-					temp->next->song->title = temp->song->title;
-					temp->next->song->artist = temp->song->artist;
-					temp->next->song->min = temp->song->min;
-					temp->next->song->sec = temp->song->sec;
-					temp->song->title = nextTitle;
-					temp->song->artist = nextArtist;
-					temp->song->min = nextMin;
-					temp->song->sec = nextSec;
-					count++;
-				}
-			}
-		}
-	}
-	void DLL::listDuration(int *tm, int *ts){
-		DNode *temp;
-		for (temp=first; temp!=NULL; temp=temp->next){
-			*tm+=temp->song->min;
-			*ts+=temp->song->sec;
-		}
-	}
+void DLL::moveDown(string t){
+    DNode *temp;
+    int count = 0;
+    for (temp=first; temp!=NULL; temp=temp->next){
+        if (temp->song->title==t){
+            if (temp->next==NULL){
+                //cout << "last song"<<endl;
+                first = temp->next;
+            }
+            else if(count==0){
+                //cout << "middle song"<<endl;
+                string nextTitle = temp->next->song->title;
+                string nextArtist = temp->next->song->artist;
+                int nextMin = temp->next->song->min;
+                int nextSec = temp->next->song->sec;
+                temp->next->song->title = temp->song->title;
+                temp->next->song->artist = temp->song->artist;
+                temp->next->song->min = temp->song->min;
+                temp->next->song->sec = temp->song->sec;
+                temp->song->title = nextTitle;
+                temp->song->artist = nextArtist;
+                temp->song->min = nextMin;
+                temp->song->sec = nextSec;
+                count++;
+            }
+        }
+    }
+}
+void DLL::listDuration(int *tm, int *ts){
+    DNode *temp;
+    for (temp=first; temp!=NULL; temp=temp->next){
+        *tm+=temp->song->min;
+        *ts+=temp->song->sec;
+    }
+}
 
-	void DLL::printList(){
-		DNode *temp = first;
-		while (temp->next!=NULL){
-			temp->song->printSong();
-			temp = temp->next;
-		}
-		temp->song->printSong();
-	}
+void DLL::printList(){
+    DNode *temp = first;
+    while (temp->next!=NULL){
+        temp->song->printSong();
+        temp = temp->next;
+    }
+    temp->song->printSong();
+}
 
-	DLL::~DLL(){
-		DNode *temp;
-		for (temp=first; temp!=NULL; temp=temp->next){
-			//cout << "deleting: "<<temp->song->title<<endl;
-			delete temp;
-		}
-	}
+DLL::~DLL(){
+    DNode *temp;
+    for (temp=first; temp!=NULL; temp=temp->next){
+        //cout << "deleting: "<<temp->song->title<<endl;
+        delete temp;
+    }
+}
 
 
 
