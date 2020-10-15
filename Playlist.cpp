@@ -131,7 +131,7 @@ void Playlist::removeSong() {
 	string title = getTitle();
 
 	if (title.length() >0) {
-		list->remove(title);
+		list->remove(title, 1);
 		list->printList();
 	}
 }

@@ -52,7 +52,7 @@ Song* DLL::pop(){
     return x;
 }
 
-int DLL::remove(string t){
+int DLL::remove(string t, bool print){
     int i = 0;
     int count;
     DNode *temp;
@@ -75,8 +75,11 @@ int DLL::remove(string t){
                 temp->next->prev = temp->prev;
                 count = i;
             }
-            cout << "Removing: "<< temp->song->title << ", " << temp->song->artist<<"............................."<<temp->song->min<<":"<<temp->song->sec;
-            cout << endl;
+            if(print) {
+                cout << "Removing: " << temp->song->title << ", " << temp->song->artist
+                     << "............................." << temp->song->min << ":" << temp->song->sec;
+                cout << endl;
+            }
             delete temp;
         }
     }
@@ -113,7 +116,7 @@ void DLL::moveUp(string t){
                 string temp_a = temp->song->artist;
                 int temp_min = temp->song->min;
                 int temp_sec = temp->song->sec;
-                remove(temp->song->title);
+                remove(temp->song->title, 0);
                 push(temp_t, temp_a, temp_min, temp_sec);
                 count++;
 
@@ -147,7 +150,7 @@ void DLL::moveDown(string t){
                 string temp_a = temp->song->artist;
                 int temp_min = temp->song->min;
                 int temp_sec = temp->song->sec;
-                remove(temp->song->title);
+                remove(temp->song->title, 0);
                 DNode *n = new DNode(temp_t,temp_a,temp_min,temp_sec);
                 n->next = first;
                 n->prev = NULL;
