@@ -115,20 +115,7 @@ void DLL::moveUp(string t){
                 int temp_sec = temp->song->sec;
                 remove(temp->song->title);
                 push(temp_t, temp_a, temp_min, temp_sec);
-                /*cout << "first song"<<endl;
-                string secondTitle = temp->next->song->title;
-                string secondArtist = temp->next->song->artist;
-                int secondMin = temp->next->song->min;
-                int secondSec = temp->next->song->sec;
-                last->song->title = temp->song->title;
-                last->song->artist = temp->song->artist;
-                last->song->min = temp->song->min;
-                last->song->sec = temp->song->sec;
-                temp->song->title = secondTitle;
-                temp->song->artist = secondArtist;
-                temp->song->min = secondMin;
-                temp->song->sec = secondSec;
-                count++;*/
+                count++;
 
             }
             else if (count==0){
@@ -164,7 +151,6 @@ void DLL::moveDown(string t){
                 DNode *n = new DNode(temp_t,temp_a,temp_min,temp_sec);
                 n->next = first;
                 n->prev = NULL;
-
                 first->prev = n;
                 first = n;
                 numSongs+=1;
@@ -206,11 +192,15 @@ void DLL::printList(){
 }
 
 DLL::~DLL(){
-    DNode *temp;
-    for (temp=first; temp!=NULL; temp=temp->next){
-        //cout << "deleting: "<<temp->song->title<<endl;
-        delete temp;
+    DNode *temp = first;
+    DNode *next;
+    while (temp!=NULL){
+    	next = temp->next;
+    	delete temp;
+    	//cout << "deleting "<< temp->song->title<<endl;
+    	temp = next;
     }
+    first = NULL;
 }
 
 

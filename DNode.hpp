@@ -1,5 +1,3 @@
-
-
 #ifndef DNODE_HPP_
 #define DNODE_HPP_
 #include <stdlib.h>

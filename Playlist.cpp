@@ -1,4 +1,3 @@
-
 #include <fstream>
 #include <stdlib.h>
 #include <iostream>
@@ -212,6 +211,5 @@ void Playlist::readList(string f) {
 	cout <<"*********DONE READING**************************"<<endl<<endl;
 	return;
 }
-
 
 
